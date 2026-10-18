@@ -5,12 +5,20 @@
 
 #include <strint.h>
 
+void printf_skip(...) {}
+
+#ifdef ENABLE_PRINT
+#define tprintf printf
+#else
+#define tprintf printf_skip
+#endif
+
 #define str_to_check(num, bits, fmt, func) {\
   char str[128];\
   snprintf(str, sizeof(str), "%" fmt, num);\
-  if (func (str, NULL) == num) printf("\e[0;92mpass: %s(\"%s\")\e[0m\n", #func, str);\
+  if (func (str, NULL) == num) tprintf("\e[0;92mpass: %s(\"%s\")\e[0m\n", #func, str);\
   else {\
-    printf("\e[1;91mfail: %s(\"%s\") -> %i\n\e[0m", #func, str, func (str, NULL)); \
+    tprintf("\e[1;91mfail: %s(\"%s\") -> %i\n\e[0m", #func, str, func (str, NULL)); \
     error++;\
   }\
 }
